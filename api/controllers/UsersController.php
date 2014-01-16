@@ -7,7 +7,8 @@ class UsersController{
 	public function __construct(){
 
 		//Connexion à la DB
-		$this->db=new DB\SQL(
+		$this->
+db=new DB\SQL(
 		    'mysql:host=localhost;port=3306;dbname=cinema','root','');
 
 	}
@@ -24,13 +25,12 @@ class UsersController{
 	}
 
 	public function actionCreate(){
-		if(isset($_POST['name'])){
-			$data = array('Create dog with name ' . $_POST['name']);
-			Api::response(200, $data);
-		}
-		else{
-			Api::response(400, array('error'=>'Name is missing'));
-		}
+		$this->db->begin();
+		$data = $this->db->exec('INSERT INTO users (pseudo_user, email_user, mdp_user, token) 
+								VALUES ( "'. F3::get('POST.pseudo'). '", "'. F3::get('POST.email'). '", "'. F3::get('POST.mdp'). '","'. F3::get('POST.token'). '" )');
+		$this->db->commit();
+
+		Api::response(200, $data);
 	}
 
 	public function actionFindOne(){
@@ -42,13 +42,27 @@ class UsersController{
 	}
 
 	public function actionUpdate(){
-		$data = array('Update dog with name: ' . F3::get('PARAMS.id'));
+		$this->db->begin();
+		$id_user = F3::get('PARAMS.id_user');
+		$array = Put::get();
+
+		$data = $this->db->exec('UPDATE users SET
+		pseudo_user = "'. $array['pseudo'] . '",
+		email_user  = "'. $array['email'] . '",
+		mdp_user    = "'. $array['mdp'] . '",
+		token 	    = "'. $array['token'] . '"
+		WHERE id_user = ' . $id_user);
+		$this->db->commit();
+
 		Api::response(200, $data);
 	}
 
 	public function actionDelete(){
+		$this->db->begin();
+		$id_user = F3::get('PARAMS.id_user');
 
-		$data = array('Delete dog with name: ' . F3::get('PARAMS.id'));
+		$data = $this->db->exec('DELETE FROM users WHERE id_user =' . $id_user);
+		$this->db->commit();
 		Api::response(200, $data);
 	}
 }

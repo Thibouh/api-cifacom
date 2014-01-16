@@ -23,13 +23,12 @@ class FilmsController{
 	}
 
 	public function actionCreate(){
-		if(isset($_POST['name'])){
-			$data = array('Create dog with name ' . $_POST['name']);
-			Api::response(200, $data);
-		}
-		else{
-			Api::response(400, array('error'=>'Name is missing'));
-		}
+		$this->db->begin();
+		$data = $this->db->exec('INSERT INTO users (title_film, descr_film, author_film, actor_film, category_film, parution_film, rate_film) 
+								VALUES ( "'. F3::get('POST.title'). '", "'. F3::get('POST.descr'). '", "'. F3::get('author'). '","'. F3::get('POST.actor'). '","'. F3::get('POST.category'). '","'. F3::get('POST.parution'). '","'. F3::get('POST.rate'). '" )');
+		$this->db->commit();
+
+		Api::response(200, $data);
 	}
 
 	public function actionFindOne(){
@@ -64,12 +63,30 @@ class FilmsController{
 	
 
 	public function actionUpdate(){
-		$data = array('Update dog with name: ' . F3::get('PARAMS.id'));
+		$this->db->begin();
+		$id_film = F3::get('PARAMS.id_film');
+		$array = Put::get();
+
+		$data = $this->db->exec('UPDATE films SET
+		title_film = "'. $array['title'] . '",
+		descr_film  = "'. $array['descr'] . '",
+		author_film    = "'. $array['author'] . '",
+		actor_film 	    = "'. $array['actor'] . '"
+		rate_film 	    = "'. $array['rate'] . '"
+		parution_film 	    = "'. $array['parution'] . '"
+		category_film 	    = "'. $array['category'] . '"
+		WHERE id_film = ' . $id_film);
+		$this->db->commit();
+
 		Api::response(200, $data);
 	}
 
 	public function actionDelete(){
-		$data = array('Delete dog with name: ' . F3::get('PARAMS.id'));
+		$this->db->begin();
+		$id_film = F3::get('PARAMS.id_film');
+
+		$data = $this->db->exec('DELETE FROM films WHERE id_film =' . $id_film);
+		$this->db->commit();
 		Api::response(200, $data);
 	}
 }
