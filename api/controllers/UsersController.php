@@ -63,6 +63,48 @@ db=new DB\SQL(
 
 		$data = $this->db->exec('DELETE FROM users WHERE id_user =' . $id_user);
 		$this->db->commit();
+
 		Api::response(200, $data);
 	}
+
+	public function actionWillSee() {
+		$this->db->begin();
+		$id_user = F3::get('PARAMS.id_user');
+
+		$data = $this->db->exec(
+			'SELECT * FROM 
+			`films` f LEFT JOIN `will_see` w ON w.`id_film` = f.`id_film`
+					   LEFT JOIN `users` u ON u.`id_user` = w.`id_user`
+					   WHERE u.`id_user`=' . $id_user);
+		$this->db->commit();
+		Api::response(200, $data);
+	}
+
+	public function actionAlReadySee() {
+		$this->db->begin();
+		$id_user = F3::get('PARAMS.id_user');
+
+		$data = $this->db->exec(
+			'SELECT * FROM 
+			`films` f LEFT JOIN `already_see` a ON a.`id_film` = f.`id_film`
+					   LEFT JOIN `users` u ON u.`id_user` = a.`id_user`
+					   WHERE u.`id_user`=' . $id_user);
+		$this->db->commit();
+		Api::response(200, $data);
+	}
+
+	public function actionLike() {
+		$this->db->begin();
+		$id_user = F3::get('PARAMS.id_user');
+
+		$data = $this->db->exec(
+			'SELECT * FROM 
+			`films` f LEFT JOIN `like_user` lu ON lu.`id_film` = f.`id_film`
+					   LEFT JOIN `users` u ON u.`id_user` = lu.`id_user`
+					   WHERE u.`id_user`=' . $id_user);
+		$this->db->commit();
+		Api::response(200, $data);
+	}	
+
+
 }

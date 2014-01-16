@@ -24,7 +24,7 @@ class FilmsController{
 
 	public function actionCreate(){
 		$this->db->begin();
-		$data = $this->db->exec('INSERT INTO users (title_film, descr_film, author_film, actor_film, category_film, parution_film, rate_film) 
+		$data = $this->db->exec('INSERT INTO films (title_film, descr_film, author_film, actor_film, category_film, parution_film, rate_film) 
 								VALUES ( "'. F3::get('POST.title'). '", "'. F3::get('POST.descr'). '", "'. F3::get('author'). '","'. F3::get('POST.actor'). '","'. F3::get('POST.category'). '","'. F3::get('POST.parution'). '","'. F3::get('POST.rate'). '" )');
 		$this->db->commit();
 
@@ -60,8 +60,6 @@ class FilmsController{
 		Api::response(200 , $data);
 	}
 
-	
-
 	public function actionUpdate(){
 		$this->db->begin();
 		$id_film = F3::get('PARAMS.id_film');
@@ -88,5 +86,9 @@ class FilmsController{
 		$data = $this->db->exec('DELETE FROM films WHERE id_film =' . $id_film);
 		$this->db->commit();
 		Api::response(200, $data);
+	}
+
+	public function actionAddWillSee(){
+
 	}
 }
